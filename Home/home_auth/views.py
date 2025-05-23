@@ -25,6 +25,10 @@ def signup_view(request):
             password=password,
         )
         
+        user.is_student = False
+        user.is_teacher = False
+        user.is_admin = False
+
         # Assign the appropriate role
         if role == 'student':
             user.is_student = True
@@ -32,6 +36,9 @@ def signup_view(request):
             user.is_teacher = True
         elif role == 'admin':
             user.is_admin = True
+        else:
+            messages.error(request, "Invalid role selected.")
+            return redirect('signup')
 
         user.save()  # Save the user with the assigned role
         login(request, user)
@@ -49,21 +56,11 @@ def login_view(request):
         if user is not None:
             login(request, user)
             messages.success(request, 'Login successful!')
-            
-            # Redirect user based on their role
-            if user.is_admin:
-                return redirect('admin_dashboard')
-            elif user.is_teacher:
-                return redirect('teacher_dashboard')
-            elif user.is_student:
-                return redirect('dashboard')
-            else:
-                messages.error(request, 'Invalid user role')
-                return redirect('index')  # Redirect to index in case of error
-            
+            return redirect('dashboard')  # sempre alla dashboard centrale
         else:
             messages.error(request, 'Invalid credentials')
-    return render(request, 'authentication/login.html')  # Render login template
+
+    return render(request, 'authentication/login.html')
 
 
 def forgot_password_view(request):

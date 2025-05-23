@@ -2,6 +2,7 @@ from django.http import HttpResponseForbidden
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import *
 from django.contrib import messages
+from school.notifications import create_notification
 # Create your views here.
 
 def add_student(request):
